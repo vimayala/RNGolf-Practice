@@ -37,38 +37,51 @@ class Play extends Phaser.Scene {
         this.ball.body.setBounce(0.5)
         this.ball.body.setDamping(true).setDrag(0.5)
         // add walls
-        let wallA = this.physics.add.sprite(0, height / 4, 'wall')
-        wallA.setX(Phaser.Math.Between(0 + wallA.width / 2, width - wallA.width / 2))
-        wallA.body.setImmovable(true)
+        // let wallA = this.physics.add.sprite(0, height / 4, 'wall')
+        // wallA.setX(Phaser.Math.Between(0 + wallA.width / 2, width - wallA.width / 2))
+        // wallA.body.setImmovable(true)
 
-        let wallB = this.physics.add.sprite(0, height / 2, 'wall')
-        wallB.setX(Phaser.Math.Between(0 + wallB.width / 2, width - wallB.width / 2))
-        wallB.body.setImmovable(true)
+        // let wallB = this.physics.add.sprite(0, height / 2, 'wall')
+        // wallB.setX(Phaser.Math.Between(0 + wallB.width / 2, width - wallB.width / 2))
+        // wallB.body.setImmovable(true)
 
-        // make a group (passed in as array) to make collider
-        this.walls = this.add.group([wallA, wallB])
-        // add one-way
+        // // make a group (passed in as array) to make collider
+        // this.walls = this.add.group([wallA, wallB])
+
+        // // add one-way
+        // this.oneWay = this.physics.add.sprite(width / 2, height/ 4 * 3, 'oneway')
+        // this.oneWay.setX(Phaser.Math.Between(0 + this.oneWay.width / 2, width - this.oneWay.width / 2))
+        // this.oneWay.body.setImmovable(true)
+        // this.oneWay.body.checkCollision.down = false
 
         // add pointer input
         this.input.on('pointerdown', (pointer) => {
             let shotDirection = pointer.y <= this.ball.y ? 1 : -1
-            this.ball.body.setVelocityX(Phaser.Math.Between(-this.SHOT_VELOCITY_X, this.SHOT_VELOCITY_X))
-            this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MAX) * shotDirection)
+            // this.ball.body.setVelocityX(Phaser.Math.Between(-this.SHOT_VELOCITY_X, this.SHOT_VELOCITY_X))
+            // this.ball.body.setVelocityY(Phaser.Math.Between(this.SHOT_VELOCITY_Y_MIN, this.SHOT_VELOCITY_Y_MAX) * shotDirection)
+            this.ball.body.setVelocityX(pointer.x)
+            this.ball.body.setVelocityY(pointer.y * shotDirection)
         })
 
         // cup/ball collision
         this.physics.add.collider(this.ball, this.cup, (ball, cup) => {      //ball and cup auto passed in, just need local names
-            ball.destroy()
+            this.ball.alpha = 0
+            this.ball.body.setVelocityX = 0
+            this.ball.body.setVelocityY = 0
+            this.ball.setPosition(width / 2, height - height / 10)
+            this.ball.alpha = 1
+            // this.ball.reset(width / 2, height - height / 10)
         })
 
         // ball/wall collision
         this.physics.add.collider(this.ball, this.walls)        // No callback bc you just want it to hit and bounce back
 
         // ball/one-way collision
+        this.physics.add.collider(this.ball, this.oneWay)
     }
 
     update() {
-
+        // this.wallA.setPositionX -= 10
     }
 }
 /*
